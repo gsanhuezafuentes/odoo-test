@@ -1,13 +1,12 @@
 # Copyright 2020 Open Source intgerators
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
-import json
-
 from typing import Optional
+
 from odoo.addons.component.core import Component
-from odoo import http
 from odoo.addons.base_rest import restapi
 import logging
-import re
+
+from ..util import rest_utils
 
 _logger = logging.getLogger(__name__)
 class Account(Component):
@@ -40,16 +39,18 @@ class Account(Component):
             "error": "",
             "data": []
         }
+
         try:
             x_coordinates = float(x_coordinates)
             y_coordinates = float(y_coordinates)
             max_distance = float(max_distance)
         except ValueError as e:
+            invalid_param = str(e).split(":")[1]
             response_temple.update({
                 "success": False,
-                "error": e
+                "error": f"The param {invalid_param} can't be converted to number."
             })
-            return http.Response(json.dumps(response_temple), status=400)
+            return rest_utils.api_response(response_temple, 400)
         
         partners = self.env["res.partner"].search_closes_partners(
             x_coordinates, y_coordinates, max_distance, gender
@@ -58,8 +59,8 @@ class Account(Component):
         response_temple.update(
             {
                 "data": [
-                    {"name": partner.name } 
-                    for partner in partners
+                    {"name": partner.name, "distance": distance} 
+                    for partner, distance in partners
                 ]
             }
         )

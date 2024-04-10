@@ -1,5 +1,7 @@
-import math
-from odoo import fields, models, api, exceptions
+from typing import List, Tuple
+from odoo import fields, models, api
+
+from ..util import geo_utils
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -15,7 +17,7 @@ class ResPartner(models.Model):
     @api.model
     def search_closes_partners(
         self, x: float, y:float, max_distance:float, gender: str=None
-    ):
+    ) -> List[Tuple["ResPartner", float]]:
         search_lookup = []
         if gender:
             search_lookup.append(("gender", "=", gender ))
@@ -23,8 +25,13 @@ class ResPartner(models.Model):
 
         closest_partners = []
         for partner in partners:
-            distance = math.sqrt((partner.x_coordinate - x)**2 + (partner.y_coordinate - y)**2)
+            distance = geo_utils.calculate_distance(
+                partner.x_coordinate,
+                partner.y_coordinate,
+                x,
+                y
+            )
             if distance <= max_distance:
-                closest_partners.append(partner)
+                closest_partners.append((partner, distance))
         return closest_partners
   
