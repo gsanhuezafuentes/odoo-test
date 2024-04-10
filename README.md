@@ -64,3 +64,7 @@ Contruye la imagen de Docker ejecutando el siguiente comando:
 ## services/contact.py
 
 * Se implemento el servicio `close_contact`.
+
+## Consideraciones extras
+
+Para ocupar la API, se necesita iniciar sesión dentro de la página web de odoo `localhost:8069`. De esta manera en el navegador se guardará la cookie de la sesión que será utilizada cuando se haga la consulta a traves de la Swager. 
