@@ -1,11 +1,13 @@
 # Copyright 2020 Open Source intgerators
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+import json
+
+from typing import Optional
 from odoo.addons.component.core import Component
 from odoo import http
 from odoo.addons.base_rest import restapi
 import logging
 import re
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 class Account(Component):
@@ -32,23 +34,34 @@ class Account(Component):
         }),
         auth="public",
     )
-    def close_contact(self, x_coordinates, y_coordinates, max_distance, gender=None):
+    def close_contact(self, x_coordinates: str, y_coordinates: str, max_distance: str, gender: Optional[str]=None):
+        response_temple = {
+            "success": True,
+            "error": "",
+            "data": []
+        }
         try:
             x_coordinates = float(x_coordinates)
             y_coordinates = float(y_coordinates)
             max_distance = float(max_distance)
-        except ValueError:
-            raise UserError("Una de las propiedades no es un numero valido")
-
+        except ValueError as e:
+            response_temple.update({
+                "success": False,
+                "error": e
+            })
+            return http.Response(json.dumps(response_temple), status=400)
+        
         partners = self.env["res.partner"].search_closes_partners(
             x_coordinates, y_coordinates, max_distance, gender
         )  
 
-        return {
-            "success": True,
-            "error": "",
-            "data": [
-                {"name": partner.name } 
-                for partner in partners
-            ]
-        }
+        response_temple.update(
+            {
+                "data": [
+                    {"name": partner.name } 
+                    for partner in partners
+                ]
+            }
+        )
+
+        return response_temple
