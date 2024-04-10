@@ -48,6 +48,6 @@ Contruye la imagen de Docker ejecutando el siguiente comando:
    docker network create -d bridge test-network
 ```
 
-## Cargar datos de prueba
-
-## API
+## Modificaciones en __manifest__.py
+1. Se agrego `data/res_partner.xml` al `__manifest__.py` del modulo.
+2. Se agrego `view/res_partner.xml` al `__manifest__.py` del modulo. Los atributos se muestran en la pestaña de **Información Extra** del modulo Contacts.
