@@ -48,6 +48,19 @@ Contruye la imagen de Docker ejecutando el siguiente comando:
    docker network create -d bridge test-network
 ```
 
+## models/res_partner.py
+
+* Se agregaron los atributos `x_coordinate`, `y_coordinate` y `gender`
+* Se agrego el método `search_closes_partners` para obtener los partner que estan dentro de la distancia especificada.
+
+## views/res_partner.xml
+
+* Se muestran los atributos en la pestaña de **Información Extra** del modulo Contacts.
+
 ## Modificaciones en __manifest__.py
 1. Se agrego `data/res_partner.xml` al `__manifest__.py` del modulo.
-2. Se agrego `view/res_partner.xml` al `__manifest__.py` del modulo. Los atributos se muestran en la pestaña de **Información Extra** del modulo Contacts.
+2. Se agrego `view/res_partner.xml` al `__manifest__.py` del modulo. 
+
+## services/contact.py
+
+* Se implemento el servicio `close_contact`.
